@@ -9,8 +9,8 @@
         .page-header {
             padding: 120px 2rem 3rem;
             text-align: center;
-            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-color) 100%);
-            border-bottom: 1px solid var(--border-light);
+            background: transparent;
+            border-bottom: none;
         }
 
         .registration-layout {
@@ -96,8 +96,11 @@
         
         @media (max-width: 900px) {
             .registration-layout {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column-reverse;
                 padding: 2rem 1.5rem;
+                gap: 1rem;
+                align-items: stretch;
             }
             .page-header {
                 padding: 100px 1.5rem 2rem;
@@ -110,6 +113,13 @@
 </head>
 <body>
     
+    <!-- Abstract Background -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
     <!-- Navbar -->
     <header class="site-header">
         <div class="container nav-container">

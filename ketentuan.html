@@ -9,8 +9,8 @@
         .page-header {
             padding: 120px 2rem 3rem;
             text-align: center;
-            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-color) 100%);
-            border-bottom: 1px solid var(--border-light);
+            background: transparent;
+            border-bottom: none;
         }
         
         .tabs-nav {
@@ -140,10 +140,26 @@
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
+        
+        .ketentuan-text ul {
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .ketentuan-text li {
+            margin-bottom: 0.8rem;
+        }
     </style>
 </head>
 <body>
     
+    <!-- Abstract Background -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
     <!-- Navbar -->
     <header class="site-header">
         <div class="container nav-container">
@@ -186,15 +202,26 @@
             <div class="glass-card" style="padding: 3rem;">
                 <div class="ketentuan-text">
                     <h3>Syarat dan Ketentuan Pendaftaran</h3>
-                    <p>Selamat datang di program Internship iCraftDS. Program ini dirancang untuk mahasiswa dan profesional muda yang ingin mendapatkan pengalaman nyata di industri teknologi.</p>
                     <ul>
-                        <li>Peserta wajib mengikuti seluruh tahapan seleksi.</li>
-                        <li>Memiliki ketertarikan kuat pada Web Development, Data Science, atau Mobile Development.</li>
-                        <li>Bersedia berkomitmen penuh selama durasi program (minimal 3 bulan).</li>
+                        <li><strong>Kriteria Peserta:</strong> Terbuka bagi mahasiswa aktif atau fresh graduate yang antusias untuk membangun pengalaman nyata di industri teknologi.</li>
+                        <li><strong>Minat Bidang:</strong> Memiliki ketertarikan dan pemahaman dasar pada salah satu bidang: Web Development, Data Science, atau Mobile Development.</li>
+                        <li><strong>Komitmen Waktu:</strong> Bersedia berkomitmen mengikuti program selama minimal 3 bulan.</li>
+                        <li><strong>Sistem Kerja:</strong> Program ini bersifat unpaid internship (tidak ada kompensasi finansial) yang berfokus pada pengembangan skill dan portofolio industri.</li>
+                        <li><strong>Proses Seleksi:</strong> Peserta wajib mengikuti seluruh tahapan seleksi yang ditentukan oleh tim iCraftDS.</li>
                     </ul>
                     
                     <h3>Fasilitas Program</h3>
-                    <p>Peserta yang lolos akan mendapatkan mentoring intensif dari senior developer, kesempatan mengerjakan *real-world project*, serta sertifikat kelulusan industri.</p>
+                    <ul>
+                        <li><strong>Fleksibilitas Penuh (WFA):</strong> Sistem kerja 100% Work From Anywhere dengan jam kerja yang fleksibel. Fokus kami adalah pada penyelesaian tugas (result-oriented), bukan kehadiran fisik.</li>
+                        <li><strong>Mentoring Terarah:</strong> Sesi pembimbingan dan code review berkala dari praktisi atau senior developer untuk memastikan proses belajar Anda efektif dan tidak salah arah.</li>
+                        <li><strong>Pembelajaran Berbasis Praktik:</strong> Anda tidak hanya akan belajar teori, tetapi langsung dilibatkan dalam mini project atau real-world project terstruktur yang relevan dengan kebutuhan industri.</li>
+                        <li><strong>Sertifikat & Portofolio:</strong> E-Sertifikat kelulusan program serta hasil karya proyek yang bisa langsung Anda jadikan nilai tambah di CV atau portofolio profesional Anda.</li>
+                    </ul>
+                    
+                    <div style="margin-top: 3.5rem; text-align: center;">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-primary); font-size: 1.2rem;">Sudah siap memulai perjalanan Anda?</h4>
+                        <a href="daftar.html" class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem; display: inline-block;">Daftar Sekarang</a>
+                    </div>
                 </div>
             </div>
         </div>
