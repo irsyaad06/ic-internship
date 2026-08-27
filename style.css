@@ -302,11 +302,15 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--border-light);
   transition: all 0.3s ease;
   box-shadow: var(--shadow-soft);
+  display: inline-block;
 }
 
 .btn-secondary:hover {
-  background: var(--bg-color);
-  border-color: var(--primary-start);
+  background: linear-gradient(to right, var(--primary-start), var(--primary-end));
+  color: #fff !important;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(20, 114, 255, 0.2);
 }
 
 /* Animations */
