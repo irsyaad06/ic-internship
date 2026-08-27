@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline - iCraftDS</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            height: 100vh !important;
+            overflow: hidden !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            padding: 100px 2rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-color) 100%);
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+
+        .timeline-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 3rem;
+            padding: 2rem 0;
+            flex: 1;
+            overflow: hidden;
+            align-items: stretch; /* Stretch to fill height */
+        }
+
+        @media (max-width: 900px) {
+            body {
+                height: auto !important;
+                overflow: visible !important;
+                display: block;
+            }
+            .page-header {
+                padding: 100px 1.5rem 2rem;
+            }
+            .timeline-layout {
+                grid-template-columns: 1fr;
+                padding: 2rem 1.5rem;
+                overflow: visible;
+                display: block;
+            }
+            .timeline-list-container {
+                padding-right: 0;
+                padding-left: 0;
+                padding-bottom: 0;
+                height: auto;
+                overflow-y: visible;
+            }
+            .timeline-detail {
+                display: none !important;
+            }
+            .mobile-detail {
+                display: none;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px dashed var(--border-light);
+            }
+            .timeline-item.active .mobile-detail {
+                display: block;
+                animation: slideDown 0.3s ease-out;
+            }
+            
+            /* Mobile Click Indicator */
+            .indicator-icon {
+                transform: rotate(90deg); /* Point down on mobile by default */
+            }
+            .timeline-item:hover .click-indicator {
+                transform: translateY(3px); /* Move down slightly instead of right */
+            }
+            .timeline-item.active .indicator-icon {
+                transform: rotate(-90deg); /* Point up when active/expanded */
+            }
+            .timeline-item.active .click-indicator {
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Left Side: Timeline List */
+        .timeline-list-container {
+            padding-right: 1.5rem;
+            padding-left: 0.5rem;
+            padding-bottom: 2rem;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        /* Custom scrollbar for timeline list */
+        .timeline-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .timeline-list-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .timeline-list-container::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 10px;
+        }
+        .timeline-list-container:hover::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(5px);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.3rem;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--border-light); /* Default inactive state */
+            border: 3px solid var(--bg-white);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item.active::before,
+        .timeline-item:hover::before {
+            background: var(--primary-end);
+            box-shadow: 0 0 0 3px rgba(20, 114, 255, 0.15);
+        }
+        
+        /* Agustus Colors */
+        .timeline-item.month-agustus.active::before,
+        .timeline-item.month-agustus:hover::before {
+            background: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+        .timeline-item.month-agustus.active .timeline-card {
+            border-left-color: #0ea5e9;
+        }
+        .timeline-item.month-agustus .timeline-date-sm {
+            color: #0ea5e9;
+        }
+
+        /* September Colors */
+        .timeline-item.month-september.active::before,
+        .timeline-item.month-september:hover::before {
+            background: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        .timeline-item.month-september.active .timeline-card {
+            border-left-color: #8b5cf6;
+        }
+        .timeline-item.month-september .timeline-date-sm {
+            color: #8b5cf6;
+        }
+
+        /* Special overrides (e.g. First Meet) */
+        .timeline-item.special.active::before,
+        .timeline-item.special:hover::before {
+            background: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15);
+        }
+
+        .timeline-card {
+            padding: 1rem 1.5rem;
+            border-left: 3px solid transparent;
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active .timeline-card {
+            border-left-color: var(--primary-start);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .timeline-item.special.active .timeline-card {
+            border-left-color: #ec4899 !important;
+        }
+
+        .timeline-date-sm {
+            color: var(--primary-end);
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .timeline-item.special .timeline-date-sm {
+            color: #ec4899 !important;
+        }
+
+        .timeline-title-sm {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        /* Click Indicator */
+        .card-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .click-indicator {
+            color: var(--text-secondary);
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.03);
+        }
+
+        .timeline-item:hover .click-indicator {
+            opacity: 1;
+            transform: translateX(4px);
+            color: var(--primary-end);
+            background: rgba(20, 114, 255, 0.1);
+        }
+
+        .timeline-item.active .click-indicator {
+            opacity: 1;
+            color: var(--bg-white);
+            background: var(--primary-end);
+        }
+        
+        .indicator-icon {
+            transition: transform 0.3s ease;
+        }
+
+        /* Mobile inline details */
+        .mobile-detail {
+            display: none;
+        }
+        
+        .mobile-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .mobile-tasks {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .mobile-tasks li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .mobile-tasks li::before {
+            content: '✓';
+            color: var(--primary-end);
+            font-weight: bold;
+        }
+        
+        .timeline-item.special .mobile-tasks li::before {
+            color: #ec4899;
+        }
+
+        /* Right Side: Detail Pane */
+        .timeline-detail {
+            position: relative;
+            padding: 3rem;
+            background: var(--bg-white);
+            border-radius: 24px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+            animation: fadeIn 0.4s ease forwards;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        /* Custom scrollbar for detail pane */
+        .timeline-detail::-webkit-scrollbar {
+            width: 6px;
+        }
+        .timeline-detail::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .timeline-detail::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 10px;
+        }
+        .timeline-detail:hover::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+
+        .detail-date {
+            display: inline-block;
+            background: rgba(20, 114, 255, 0.1);
+            color: var(--primary-end);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-title {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .detail-desc {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-extra {
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .detail-extra h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .detail-extra ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .detail-extra li {
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .detail-extra li::before {
+            content: '✓';
+            color: var(--primary-end);
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <header class="site-header">
+        <div class="container nav-container">
+            <a href="index.html" class="brand">
+                <img src="icLogo.png" alt="iCraftDS Logo" style="height: 26px; width: auto; display: block;">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="ketentuan.html">Ketentuan</a></li>
+                <li><a href="comingsoon.html?page=Dokumentasi">Dokumentasi</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="comingsoon.html?page=Pendaftaran" class="btn-primary">Daftar</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1rem;">Timeline Program</h1>
+            <p class="hero-subtitle" style="margin-bottom: 0;">Klik pada setiap tahap di bawah ini untuk melihat detail lengkap aktivitas.</p>
+        </div>
+    </div>
+
+    <main class="container timeline-layout">
+        
+        <!-- Left: Timeline List -->
+        <div class="timeline-list-container">
+            <div class="timeline" id="timeline-list">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Right: Details Pane -->
+        <div class="timeline-detail" id="timeline-detail-pane">
+            <div class="detail-date" id="detail-date">--</div>
+            <h2 class="detail-title" id="detail-title">Pilih Timeline</h2>
+            <p class="detail-desc" id="detail-desc">Klik salah satu jadwal di sebelah kiri untuk menampilkan detail selengkapnya di sini.</p>
+            
+            <div class="detail-extra" id="detail-extra" style="display: none;">
+                <h4>Fokus Utama:</h4>
+                <ul id="detail-tasks">
+                    <!-- Injected via JS -->
+                </ul>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const timelineData = [
+            {
+                id: 1,
+                date: "27 Agustus",
+                month: "agustus",
+                title: "Program Dimulai (Kickoff)",
+                shortTitle: "Kickoff",
+                desc: "Pembukaan resmi program Internship iCraftDS. Penjelasan terkait alur kerja, penggunaan tools, dan perkenalan tim pengembang.",
+                tasks: ["Onboarding peserta", "Penjelasan teknis dan alur komunikasi", "Setup environment dan akses tools"],
+                special: false
+            },
+            {
+                id: 2,
+                date: "27 Agustus - 3 September",
+                month: "agustus",
+                title: "Sprint 1: Perancangan & Riset",
+                shortTitle: "Sprint 1",
+                desc: "Fokus pada pembagian tugas (UI/UX, Backend, Mobile). Peserta akan mulai melakukan riset user flow dan perancangan arsitektur database awal.",
+                tasks: ["Pembuatan Wireframe UI/UX", "Perancangan skema Database", "Research API yang akan digunakan"],
+                special: false
+            },
+            {
+                id: 3,
+                date: "6 September",
+                month: "september",
+                title: "🔥 First Meet",
+                shortTitle: "First Meet",
+                desc: "Pertemuan perdana seluruh peserta secara langsung dengan mentor. Agenda mencakup review Sprint 1, team bonding, dan workshop intensif terkait best practices.",
+                tasks: ["Review hasil Sprint 1", "Sesi Mentoring & QnA", "Team Bonding"],
+                special: true
+            },
+            {
+                id: 4,
+                date: "4 September - 10 September",
+                month: "september",
+                title: "Sprint 2: Pengembangan Inti",
+                shortTitle: "Sprint 2",
+                desc: "Implementasi fitur utama (Core Features). Frontend mulai melakukan slicing UI, Backend mulai mengembangkan API endpoints yang sudah dirancang sebelumnya.",
+                tasks: ["Slicing UI dari Figma ke HTML/CSS/JS", "Pembuatan CRUD API (Backend)", "Pembuatan struktur komponen Mobile"],
+                special: false
+            },
+            {
+                id: 5,
+                date: "11 September - 17 September",
+                month: "september",
+                title: "Sprint 3: Integrasi API",
+                shortTitle: "Sprint 3",
+                desc: "Fokus pada menghubungkan (integrasi) tampilan frontend/mobile dengan backend API. Melakukan debugging awal dan state management.",
+                tasks: ["Konsumsi API di Frontend & Mobile", "State Management setup", "Debugging koneksi client-server"],
+                special: false
+            },
+            {
+                id: 6,
+                date: "18 September - 24 September",
+                month: "september",
+                title: "Sprint 4: QA & Evaluasi",
+                shortTitle: "Sprint 4",
+                desc: "Quality Assurance dan perbaikan bug. Peserta akan melakukan cross-testing untuk menemukan kelemahan dalam sistem dan memperbaikinya.",
+                tasks: ["Cross-testing antar tim", "Perbaikan Bug (Bug Fixing)", "Optimasi query database"],
+                special: false
+            },
+            {
+                id: 7,
+                date: "25 September - 30 September",
+                month: "september",
+                title: "Sprint 5: Finalisasi & Deployment",
+                shortTitle: "Sprint 5",
+                desc: "Mempersiapkan rilis produk. Melakukan optimasi kode, deployment ke server produksi, pembersihan console logs, dan dokumentasi akhir.",
+                tasks: ["Deployment ke Cloud Server", "Dokumentasi kode (README/Swagger)", "Persiapan presentasi"],
+                special: false
+            },
+            {
+                id: 8,
+                date: "30 September",
+                month: "september",
+                title: "Penutupan Program",
+                shortTitle: "Penutupan",
+                desc: "Presentasi final hasil karya kepada seluruh stakeholder. Penyerahan sertifikat kelulusan, feedback individu dari mentor, dan acara perpisahan.",
+                tasks: ["Presentasi Final", "Penyerahan Sertifikat", "Evaluasi Akhir"],
+                special: false
+            }
+        ];
+
+        const listContainer = document.getElementById('timeline-list');
+        const detailDate = document.getElementById('detail-date');
+        const detailTitle = document.getElementById('detail-title');
+        const detailDesc = document.getElementById('detail-desc');
+        const detailExtra = document.getElementById('detail-extra');
+        const detailTasks = document.getElementById('detail-tasks');
+        const detailPane = document.getElementById('timeline-detail-pane');
+
+        // Render the list
+        function renderList() {
+            listContainer.innerHTML = timelineData.map(item => `
+                <div class="timeline-item ${item.special ? 'special' : ''} month-${item.month}" data-id="${item.id}">
+                    <div class="timeline-card">
+                        <div class="card-header-inner">
+                            <div>
+                                <div class="timeline-date-sm">${item.date}</div>
+                                <h3 class="timeline-title-sm">${item.shortTitle}</h3>
+                            </div>
+                            <div class="click-indicator">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="indicator-icon"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-detail">
+                            <p class="mobile-desc">${item.desc}</p>
+                            ${item.tasks && item.tasks.length > 0 ? `
+                                <ul class="mobile-tasks">
+                                    ${item.tasks.map(t => `<li>${t}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click listeners
+            document.querySelectorAll('.timeline-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const id = parseInt(el.getAttribute('data-id'));
+                    
+                    // On mobile, if we click the already active item, we can toggle it off
+                    if (window.innerWidth <= 900 && el.classList.contains('active')) {
+                        el.classList.remove('active');
+                    } else {
+                        selectItem(id);
+                        
+                        // Scroll to the item so it is fully visible when opened
+                        if (window.innerWidth <= 900) {
+                            setTimeout(() => {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 50);
+                        }
+                    }
+                });
+            });
+        }
+
+        function selectItem(id) {
+            // Update active state in list
+            document.querySelectorAll('.timeline-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`.timeline-item[data-id="${id}"]`).classList.add('active');
+
+            // Find data
+            const item = timelineData.find(t => t.id === id);
+            
+            // Re-trigger animation
+            detailPane.style.animation = 'none';
+            detailPane.offsetHeight; // trigger reflow
+            detailPane.style.animation = null;
+
+            // Update details
+            detailDate.textContent = item.date;
+            detailTitle.textContent = item.title;
+            detailDesc.textContent = item.desc;
+
+            // Update Special styling in details
+            if(item.special) {
+                detailDate.style.background = 'rgba(236, 72, 153, 0.1)';
+                detailDate.style.color = '#ec4899';
+            } else if (item.month === 'agustus') {
+                detailDate.style.background = 'rgba(14, 165, 233, 0.1)';
+                detailDate.style.color = '#0ea5e9';
+            } else if (item.month === 'september') {
+                detailDate.style.background = 'rgba(139, 92, 246, 0.1)';
+                detailDate.style.color = '#8b5cf6';
+            } else {
+                detailDate.style.background = 'rgba(20, 114, 255, 0.1)';
+                detailDate.style.color = 'var(--primary-end)';
+            }
+
+            // Update Tasks
+            if (item.tasks && item.tasks.length > 0) {
+                detailExtra.style.display = 'block';
+                detailTasks.innerHTML = item.tasks.map(t => `<li>${t}</li>`).join('');
+            } else {
+                detailExtra.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        renderList();
+        // Select first item by default
+        selectItem(1);
+
+    </script>
+</body>
+</html>
