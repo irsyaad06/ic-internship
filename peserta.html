@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Peserta - iCraftDS</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-header {
+            padding: 3rem;
+            margin-top: 120px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .avatar-lg {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 4px solid var(--bg-white);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .avatar-lg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-role {
+            font-size: 1.2rem;
+            color: var(--primary-end);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .profile-bio {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .contact-links a:hover {
+            color: var(--primary-end);
+            transform: translateY(-2px);
+        }
+
+        .cv-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .cv-section {
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .cv-section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.3rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-end);
+            border: 3px solid var(--bg-white);
+            box-shadow: 0 0 0 2px rgba(20, 114, 255, 0.2);
+        }
+
+        .timeline-date {
+            color: var(--primary-end);
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .timeline-subtitle {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-light);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .portfolio-item {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portfolio-img {
+            height: 200px;
+            background: linear-gradient(45deg, var(--bg-color), #e2e8f0);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .portfolio-content {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .portfolio-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .portfolio-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        #error-state {
+            display: none;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .cv-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <header class="site-header">
+        <div class="container nav-container">
+            <a href="index.html" class="brand">
+                <img src="icLogo.png" alt="iCraftDS Logo" style="height: 26px; width: auto; display: block;">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="ketentuan.html">Ketentuan</a></li>
+                <li><a href="dokumentasi.html">Dokumentasi</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="internship.html" class="btn-primary">Daftar</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div id="error-state" class="container">
+        <h1 class="hero-title">Peserta Tidak Ditemukan</h1>
+        <p class="hero-subtitle">Maaf, data peserta yang Anda cari tidak tersedia.</p>
+        <a href="portofolio.html" class="btn-primary">Kembali ke Portofolio</a>
+    </div>
+
+    <div id="profile-content" style="display: none;">
+        <div class="container fade-in-up">
+            <div class="profile-header glass-card">
+                <div class="avatar-lg" id="p-avatar"></div>
+                <h1 class="profile-name gradient-text" id="p-name">Loading...</h1>
+                <h3 class="profile-role font-mono" id="p-role">Loading...</h3>
+                <p class="profile-bio" id="p-bio">Loading...</p>
+                
+                <div class="contact-links" id="p-contact">
+                    <!-- Links injected via JS -->
+                </div>
+            </div>
+
+            <div class="cv-grid">
+                <div class="cv-left">
+                    <div class="cv-section glass-card">
+                        <h2 class="cv-section-title">💼 Pengalaman Kerja</h2>
+                        <div class="timeline" id="p-experience">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <div class="cv-section glass-card">
+                        <h2 class="cv-section-title">🎓 Pendidikan</h2>
+                        <div class="timeline" id="p-education">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cv-right">
+                    <div class="cv-section glass-card">
+                        <h2 class="cv-section-title">🛠️ Keahlian Teknikal</h2>
+                        <div class="skills-container" id="p-skills">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                    
+                    <div class="cv-section glass-card">
+                        <h2 class="cv-section-title">🏆 Pencapaian / Organisasi</h2>
+                        <div class="timeline" id="p-achievements" style="margin-bottom: 0;">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="cv-section-title text-center" style="border: none; text-align: center; margin-bottom: 2rem;">Karya Portofolio</h2>
+            <div class="portfolio-grid" id="p-portfolio">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const participantsData = {
+            "1": {
+                name: "Peserta 1",
+                role: "Web Developer & UI/UX Designer",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=P1&backgroundColor=6366f1,ec4899",
+                bio: "Saya adalah seorang developer yang antusias membangun antarmuka web yang indah, interaktif, dan mudah digunakan. Memiliki pengalaman lebih dari 3 tahun dalam mendesain sistem yang kompleks menjadi mudah dipahami bagi pengguna akhir.",
+                contact: [
+                    { icon: "📧", label: "peserta1@email.com" },
+                    { icon: "🔗", label: "linkedin.com/in/peserta1" },
+                    { icon: "💻", label: "github.com/peserta1" }
+                ],
+                experience: [
+                    { date: "2023 - Sekarang", title: "Senior Web Developer", subtitle: "Tech Indo Kreatif", desc: "Memimpin tim frontend dalam pembuatan aplikasi berbasis React. Mengoptimalkan performa web hingga 40% lebih cepat dengan implementasi modern." },
+                    { date: "2021 - 2023", title: "UI/UX Designer", subtitle: "Studio Desain Nusantara", desc: "Mendesain wireframe, prototipe interaktif, dan high-fidelity UI/UX untuk lebih dari 10 proyek klien startup digital." }
+                ],
+                education: [
+                    { date: "2017 - 2021", title: "S1 Teknik Informatika", subtitle: "Universitas Teknologi Jakarta", desc: "IPK 3.8/4.0. Lulus dengan predikat Cum Laude. Aktif sebagai Ketua BEM Fakultas." }
+                ],
+                skills: ["HTML5 / CSS3", "JavaScript (ES6+)", "React.js", "Tailwind CSS", "Figma & Adobe XD", "Git / GitHub"],
+                achievements: [
+                    { date: "2019 - 2020", title: "Ketua BEM Fakultas", desc: "Memimpin organisasi mahasiswa tingkat fakultas dengan lebih dari 50 pengurus aktif." }
+                ],
+                portfolio: [
+                    { title: "Aplikasi E-Commerce", desc: "Desain ulang UI/UX untuk aplikasi e-commerce lokal, meningkatkan tingkat konversi sebesar 20% dan retensi pengguna. Dibuat menggunakan React dan Tailwind CSS." },
+                    { title: "Dashboard Admin Analytics", desc: "Dashboard analitik responsif dengan tema gelap untuk mengelola dan memantau data penjualan secara real-time. Dilengkapi dengan chart interaktif menggunakan Chart.js." },
+                    { title: "Company Profile Kreatif", desc: "Situs web profil perusahaan pemenang penghargaan dengan animasi scroll-driven menggunakan GSAP dan Vanilla JavaScript." }
+                ]
+            },
+            "2": {
+                name: "Peserta 2",
+                role: "Data Scientist & Backend Engineer",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=P2&backgroundColor=312e81,4c1d95",
+                bio: "Seorang spesialis dalam merancang arsitektur backend yang scalable dan menganalisis big data untuk memberikan wawasan bisnis krusial bagi perusahaan. Berfokus pada optimasi performa dan keamanan data berskala besar.",
+                contact: [
+                    { icon: "📧", label: "peserta2@email.com" },
+                    { icon: "🔗", label: "linkedin.com/in/peserta2" },
+                    { icon: "💻", label: "github.com/peserta2-ds" }
+                ],
+                experience: [
+                    { date: "2022 - Sekarang", title: "Data Scientist", subtitle: "PT Finansial Solusi Bangsa", desc: "Membangun model machine learning untuk mendeteksi penipuan (fraud detection) secara otomatis, berhasil mengurangi potensi kerugian perusahaan hingga Rp 5 Miliar per tahun." },
+                    { date: "2019 - 2022", title: "Backend Developer", subtitle: "Startup Edukasi Masa Depan", desc: "Membuat dan memelihara RESTful API yang menopang lebih dari 10.000 pengguna aktif harian dengan menggunakan Node.js, Express, dan PostgreSQL." }
+                ],
+                education: [
+                    { date: "2015 - 2019", title: "S1 Ilmu Komputer", subtitle: "Institut Teknologi Nasional", desc: "IPK 3.9/4.0. Menulis skripsi tentang optimasi algoritma clustering (K-Means) pada pemrosesan Big Data stream." }
+                ],
+                skills: ["Python (Pandas, Scikit-learn)", "Node.js / Express", "PostgreSQL / MongoDB", "Machine Learning", "Docker & Kubernetes", "AWS Cloud Services"],
+                achievements: [
+                    { date: "2023", title: "AWS Certified Solutions Architect", desc: "" },
+                    { date: "2021", title: "Google Data Analytics Certificate", desc: "" }
+                ],
+                portfolio: [
+                    { title: "Sistem Prediksi Penjualan (ML)", desc: "Membangun model Machine Learning menggunakan algoritma XGBoost untuk memprediksi tren penjualan bulanan dengan tingkat akurasi 92% dan integrasi otomatis ke sistem BI (Business Intelligence)." },
+                    { title: "RESTful API Microservices Perbankan", desc: "Membangun arsitektur backend microservices menggunakan Node.js, Express, dan Docker untuk infrastruktur aplikasi perbankan yang mampu menangani lebih dari 500 Request per Second." },
+                    { title: "Data Warehouse & ETL Pipeline", desc: "Merancang alur data ETL dari 5 sumber berbeda menggunakan Apache Airflow dan menyimpannya secara terstruktur di Google BigQuery untuk keperluan reporting C-Level." }
+                ]
+            },
+            "3": {
+                name: "Peserta 3",
+                role: "Mobile Developer",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=P3&backgroundColor=059669,10b981",
+                bio: "Seorang pengembang spesialis aplikasi mobile yang menciptakan pengalaman pengguna interaktif di platform Android dan iOS dengan performa tinggi dan desain memukau.",
+                contact: [
+                    { icon: "📧", label: "peserta3@email.com" },
+                    { icon: "🔗", label: "linkedin.com/in/peserta3" },
+                    { icon: "💻", label: "github.com/peserta3-mobile" }
+                ],
+                experience: [
+                    { date: "2022 - Sekarang", title: "Lead Mobile Developer", subtitle: "AppStudio Indonesia", desc: "Memimpin pengembangan aplikasi e-wallet nasional menggunakan Flutter yang kini digunakan oleh lebih dari 2 juta pengguna aktif." },
+                    { date: "2019 - 2022", title: "Android Developer", subtitle: "Tech Solution Jakarta", desc: "Membuat aplikasi native Android (Kotlin) untuk logistik dan supply chain management." }
+                ],
+                education: [
+                    { date: "2015 - 2019", title: "S1 Sistem Informasi", subtitle: "Institut Teknologi Nasional", desc: "IPK 3.75/4.0. Berfokus pada perancangan arsitektur sistem informasi mobile." }
+                ],
+                skills: ["Flutter & Dart", "Kotlin (Android)", "Swift (iOS)", "Firebase", "REST APIs", "UI/UX Implementation"],
+                achievements: [
+                    { date: "2023", title: "Google Associate Android Developer", desc: "Sertifikasi resmi dari Google untuk pengembangan aplikasi Android native." }
+                ],
+                portfolio: [
+                    { title: "Aplikasi E-Wallet Nasional", desc: "Aplikasi dompet digital berbasis Flutter dengan fitur QRIS, transfer bank, dan riwayat transaksi real-time." },
+                    { title: "Aplikasi Delivery Makanan", desc: "Membangun fitur tracking kurir secara langsung menggunakan integrasi Google Maps API dan WebSockets." },
+                    { title: "Aplikasi Manajemen Stok Logistik", desc: "Sistem aplikasi internal perusahaan logistik menggunakan Kotlin untuk mempercepat proses check-in barang menggunakan barcode scanner." }
+                ]
+            }
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const pid = urlParams.get('id');
+
+        if (pid && participantsData[pid]) {
+            const data = participantsData[pid];
+            
+            document.getElementById('profile-content').style.display = 'block';
+            
+            document.getElementById('p-avatar').innerHTML = `<img src="${data.avatar}" alt="Avatar">`;
+            document.getElementById('p-name').textContent = data.name;
+            document.getElementById('p-role').textContent = data.role;
+            document.getElementById('p-bio').textContent = data.bio;
+
+            document.getElementById('p-contact').innerHTML = data.contact.map(c => 
+                `<a href="#">${c.icon} ${c.label}</a>`
+            ).join('');
+
+            const generateTimeline = (items) => items.map(item => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${item.date}</div>
+                    <h3 class="timeline-title">${item.title}</h3>
+                    ${item.subtitle ? `<div class="timeline-subtitle">${item.subtitle}</div>` : ''}
+                    ${item.desc ? `<p class="timeline-desc">${item.desc}</p>` : ''}
+                </div>
+            `).join('');
+
+            document.getElementById('p-experience').innerHTML = generateTimeline(data.experience);
+            document.getElementById('p-education').innerHTML = generateTimeline(data.education);
+            document.getElementById('p-achievements').innerHTML = generateTimeline(data.achievements);
+
+            document.getElementById('p-skills').innerHTML = data.skills.map(s => 
+                `<span class="skill-tag">${s}</span>`
+            ).join('');
+
+            document.getElementById('p-portfolio').innerHTML = data.portfolio.map((p, index) => `
+                <div class="portfolio-item glass-card">
+                    <div class="portfolio-img"></div>
+                    <div class="portfolio-content">
+                        <h3>${p.title}</h3>
+                        <p>${p.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+        } else {
+            document.getElementById('error-state').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

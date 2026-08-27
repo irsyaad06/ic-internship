@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ketentuan & Portofolio - iCraftDS</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            padding: 120px 2rem 3rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-color) 100%);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-end);
+            background: rgba(20, 114, 255, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Portfolio Grid specific for light theme */
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .participant-card {
+            padding: 2.5rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .participant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 3px solid var(--bg-white);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .participant-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary-end);
+            margin-bottom: 1rem;
+            background: rgba(20, 114, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+        }
+
+        .participant-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .ketentuan-text {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .ketentuan-text h3 {
+            color: var(--text-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <header class="site-header">
+        <div class="container nav-container">
+            <a href="index.html" class="brand">
+                <img src="icLogo.png" alt="iCraftDS Logo" style="height: 26px; width: auto; display: block;">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="ketentuan.html">Ketentuan</a></li>
+                <li><a href="dokumentasi.html">Dokumentasi</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="internship.html" class="btn-primary">Daftar</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1rem;">Pusat Informasi</h1>
+            <p class="hero-subtitle" style="margin-bottom: 0;">Pelajari syarat, ketentuan, serta lihat hasil karya terbaik dari peserta sebelumnya.</p>
+        </div>
+    </div>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+        
+        <div class="tabs-nav">
+            <a href="ketentuan.html" class="tab-btn active" style="text-decoration: none;">Ketentuan Umum</a>
+            <a href="portofolio.html" class="tab-btn" style="text-decoration: none;">Contoh Portofolio</a>
+        </div>
+
+        <!-- Ketentuan Umum -->
+        <div id="ketentuan-umum" class="tab-content active">
+            <div class="glass-card" style="padding: 3rem;">
+                <div class="ketentuan-text">
+                    <h3>Syarat dan Ketentuan Pendaftaran</h3>
+                    <p>Selamat datang di program Internship iCraftDS. Program ini dirancang untuk mahasiswa dan profesional muda yang ingin mendapatkan pengalaman nyata di industri teknologi.</p>
+                    <ul>
+                        <li>Peserta wajib mengikuti seluruh tahapan seleksi.</li>
+                        <li>Memiliki ketertarikan kuat pada Web Development, Data Science, atau Mobile Development.</li>
+                        <li>Bersedia berkomitmen penuh selama durasi program (minimal 3 bulan).</li>
+                    </ul>
+                    
+                    <h3>Fasilitas Program</h3>
+                    <p>Peserta yang lolos akan mendapatkan mentoring intensif dari senior developer, kesempatan mengerjakan *real-world project*, serta sertifikat kelulusan industri.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
